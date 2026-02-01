@@ -1,57 +1,52 @@
 export async function onRequestPost(context) {
-  // 1. Cloudflare 환경변수 가져오기 (이름 유연하게 처리)
-  // 사용자가 'VITE_'를 붙였든 안 붙였든 둘 다 확인합니다.
+  // 1. API 키 가져오기 (VITE_GEMINI_API_KEY 사용)
   const apiKey = context.env.VITE_GEMINI_API_KEY;
 
-  // API 키가 없는 경우 구체적인 에러 반환
   if (!apiKey) {
-    return new Response(JSON.stringify({ 
-      error: "Critical: API Key is missing. Check Cloudflare Settings > Environment Variables." 
-    }), { 
+    return new Response(JSON.stringify({ error: "Server Configuration Error: API Key missing" }), {
       status: 500,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { "Content-Type": "application/json" },
     });
   }
 
   try {
+    // 2. 프론트엔드에서 보낸 완성된 JSON을 그대로 받음
     const requestBody = await context.request.json();
-    const { prompt } = requestBody; 
 
-    // Google Gemini API 호출
-    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-    
-    const apiResponse = await fetch(geminiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        contents: [{
-            parts: [{ text: prompt }]
-        }],
-        generationConfig: {
-            responseMimeType: "application/json"
-        }
-      })
-    });
+    // 3. Gemini API 호출 (Pass-through 방식)
+    // 들어온 Body를 건드리지 않고 그대로 Google에 전달합니다.
+    const googleResponse = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestBody),
+      }
+    );
 
-    if (!apiResponse.ok) {
-        const errorData = await apiResponse.json();
-        // Gemini 쪽 에러인지 명확히 전달
-        throw new Error(`Gemini API Error: ${errorData.error?.message || apiResponse.statusText}`);
+    // 4. 응답 처리
+    if (!googleResponse.ok) {
+        const errorText = await googleResponse.text();
+        return new Response(JSON.stringify({ 
+            error: `Google API Error: ${googleResponse.status}`, 
+            details: errorText 
+        }), {
+            status: googleResponse.status,
+            headers: { "Content-Type": "application/json" },
+        });
     }
 
-    const data = await apiResponse.json();
+    const data = await googleResponse.json();
 
     return new Response(JSON.stringify(data), {
-      headers: { 'Content-Type': 'application/json' }
+      status: 200,
+      headers: { "Content-Type": "application/json" },
     });
 
-  } catch (error) {
-    // 서버 내부 오류 내용을 반환
-    return new Response(JSON.stringify({ error: error.message }), { 
+  } catch (err) {
+    return new Response(JSON.stringify({ error: "Internal Server Error", details: err.message }), {
       status: 500,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { "Content-Type": "application/json" },
     });
   }
 }

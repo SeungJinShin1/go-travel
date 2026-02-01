@@ -73,6 +73,7 @@ async function getRecommendation() {
     const budget = document.getElementById('budget').value;
     const duration = document.getElementById('duration').value;
     
+    // 성격 유형 로직
     let personality = "";
     if (currentPersonalityType === 'mbti') {
         personality = "MBTI: " + document.getElementById('mbti-select').value;
@@ -80,11 +81,11 @@ async function getRecommendation() {
         personality = "Enneagram Type: " + document.getElementById('enneagram-select').value;
     }
 
-    // [수정됨] 로딩 화면 표시 로직 강화
+    // UI 상태 변경 (로딩 시작)
     document.getElementById('input-section').classList.add('hidden');
     const loadingSection = document.getElementById('loading-section');
-    loadingSection.classList.remove('hidden'); // hidden 클래스 제거
-    loadingSection.style.display = 'flex';     // flex 레이아웃 적용
+    loadingSection.classList.remove('hidden'); 
+    loadingSection.style.display = 'flex';     
 
     let locationConstraint = "";
     if (travelType === 'domestic') {
@@ -105,54 +106,66 @@ async function getRecommendation() {
         ${locationConstraint}
         
         위 정보를 바탕으로 최적의 여행지 1곳을 추천해주세요.
-        반드시 아래 JSON 형식으로만 응답하세요. (마크다운이나 설명 없이 JSON만 출력)
+        반드시 아래 JSON 형식으로만 응답하세요. (마크다운 없이 JSON만 출력)
         
         {
             "city_name_kr": "도시 한글명",
-            "city_name_en": "도시 영문명 (해외면 영어, 국내면 로마자 표기)",
-            "iata_code": "해당 도시의 공항 IATA 코드 3자리 (예: 다낭이면 DAD, 국내 여행이면 빈 문자열)",
+            "city_name_en": "도시 영문명",
+            "iata_code": "공항 IATA 코드 3자리 (없으면 null)",
             "country": "국가명",
-            "reason": "추천 이유 (3문장 이내, 감성적인 톤)",
+            "reason": "추천 이유 (3문장 이내)",
             "itinerary": [
-                { "day": 1, "schedule": "1일차 상세 일정 및 활동" },
-                { "day": 2, "schedule": "2일차 상세 일정 및 활동" }
-                ... (여행 기간 ${duration}일에 맞춰 생성)
+                { "day": 1, "schedule": "일정 내용" },
+                { "day": 2, "schedule": "일정 내용" }
             ],
-            "keyword": "검색용 키워드 (예: 다낭 여행)"
+            "keyword": "검색 키워드"
         }
     `;
 
     try {
-        // Cloudflare Functions (/recommend) 호출
+        // 백엔드에 보낼 때 "완성된 Gemini 포맷"으로 보내기
+        // recommend.js가 그대로 토스만 할 수 있도록 여기서 다 조립
+        const requestPayload = {
+            contents: [{
+                parts: [{ text: promptText }]
+            }],
+            generationConfig: {
+                responseMimeType: "application/json"
+            }
+        };
+
         const response = await fetch('/recommend', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                contents: [{
-                    parts: [{ text: promptText }]
-                }],
-                generationConfig: {
-                    responseMimeType: "application/json"
-                }
-            })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(requestPayload) // 완성된 JSON 전송
         });
 
-        if (!response.ok) throw new Error('API 호출 실패');
+        if (!response.ok) {
+            // 에러 메시지를 서버에서 주는 대로 정확히 표시
+            const errorData = await response.json().catch(() => ({}));
+            
+            if (response.status === 404) {
+                 throw new Error("서버 함수(/recommend)를 찾을 수 없습니다.\n1. 배포가 완료될 때까지 1~2분 기다려주세요.\n2. localhost가 아닌 'pages.dev' 주소인지 확인하세요.");
+            }
+            
+            throw new Error(errorData.details || errorData.error || `서버 오류 (${response.status})`);
+        }
 
         const data = await response.json();
-        const aiText = data.candidates[0].content.parts[0].text;
-        const result = JSON.parse(aiText);
+        const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        
+        if (!aiText) throw new Error('AI 응답이 비어있습니다.');
+
+        const cleanJson = aiText.replace(/```json/g, '').replace(/```/g, '').trim();
+        const result = JSON.parse(cleanJson);
 
         updateResultUI(result, travelType);
 
     } catch (error) {
-        console.error(error);
-        alert("여행지 분석 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.\n(개발자 모드: functions/recommend.js 가 배포되었는지 확인하세요)");
+        console.error("Error Detail:", error);
+        alert(`오류 발생: ${error.message}`);
         resetApp();
     } finally {
-        // [수정됨] 로딩 화면 숨기기 (hidden 클래스 다시 추가)
         loadingSection.classList.add('hidden');
         loadingSection.style.display = 'none';
     }
@@ -223,4 +236,5 @@ window.resetApp = resetApp;
 // 초기화
 window.addEventListener('DOMContentLoaded', () => {
     // 초기 로딩 시 국내여행(기본값)에 맞는 기간 설정
+    populateDurationOptions();
 });
