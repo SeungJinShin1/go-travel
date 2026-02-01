@@ -206,9 +206,9 @@ function updateResultUI(data, travelType) {
         btn1.innerHTML = '<i class="fa-solid fa-magnifying-glass mr-2"></i>여행 코스/맛집 검색';
         btn1.href = naverUrl;
 
-        const coupangUrl = `https://www.coupang.com/np/search?q=${encodeURIComponent(data.city_name_kr + ' 펜션')}`;
-        btn2.innerHTML = '<i class="fa-solid fa-house-chimney mr-2"></i>감성 숙소 예약하기';
-        btn2.href = coupangUrl;
+        const hotelUrl = `https://www.agoda.com/ko-kr/search?text=${encodeURIComponent(data.city_name_kr)}`;
+        btn2.innerHTML = '<i class="fa-solid fa-hotel mr-2"></i>숙소 최저가 보기';
+        btn2.href = hotelUrl;
     }
 
     document.getElementById('result-section').classList.remove('hidden');
