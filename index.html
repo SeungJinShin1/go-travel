@@ -5,21 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Go Travel - AI 여행지 추천</title>
     
-    <!-- Google AdSense (임시 ID) -->
-    <script async src="[https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0000000000000000](https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0000000000000000)" crossorigin="anonymous"></script>
-    
     <!-- Google Fonts -->
-    <link rel="preconnect" href="[https://fonts.googleapis.com](https://fonts.googleapis.com)">
-    <link rel="preconnect" href="[https://fonts.gstatic.com](https://fonts.gstatic.com)" crossorigin>
-    <link href="[https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap](https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap)" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
     
     <!-- Font Awesome for Icons -->
-    <link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css)">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Tailwind CSS (CDN) -->
-    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+    <!-- Tailwind CSS (CDN for immediate styling without build step) -->
+    <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Tailwind Configuration -->
+    <!-- Custom Tailwind Configuration -->
     <script>
         tailwind.config = {
             theme: {
@@ -45,8 +42,6 @@
         }
     </script>
 
-    <!-- CSS 파일 연결 -->
-    <link rel="stylesheet" href="style.css">
 </head>
 <body class="text-gray-800 font-sans min-h-screen flex flex-col items-center justify-center p-4">
 
@@ -134,7 +129,7 @@
                     </div>
                 </div>
 
-                <!-- Duration -->
+                <!-- Duration (New Feature) -->
                 <div class="mb-6">
                     <label class="block text-gray-700 font-bold mb-2">여행 기간</label>
                     <select id="duration" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 bg-white text-sm appearance-none">
@@ -218,7 +213,7 @@
             </section>
         </div>
 
-        <!-- Footer -->
+        <!-- Footer (Persistent across all steps) -->
         <footer class="p-6 pt-0 flex-none">
             <!-- Google AdSense Placeholder -->
             <div class="ad-placeholder mb-4">
@@ -232,8 +227,3 @@
         </footer>
 
     </main>
-
-    <!-- JS 파일 연결 -->
-    <script src="main.js"></script>
-</body>
-</html>
