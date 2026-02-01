@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
@@ -44,6 +45,9 @@
         }
     </script>
 
+    <!-- [수정됨] CSS 파일 연결 -->
+    <link rel="stylesheet" href="style.css">
+
 </head>
 <body class="text-gray-800 font-sans min-h-screen flex flex-col items-center justify-center p-4">
 
@@ -84,9 +88,10 @@
                     <label class="block text-gray-700 font-bold mb-2">나의 성격 유형은?</label>
                     
                     <!-- Tabs -->
-                    <div class="flex border-b border-gray-200 mb-3">
-                        <button type="button" id="tab-mbti" class="flex-1 py-2 text-sky-600 border-b-2 border-sky-600 font-medium text-sm transition-colors cursor-pointer" onclick="switchTab('mbti')">MBTI</button>
-                        <button type="button" id="tab-enneagram" class="flex-1 py-2 text-gray-400 font-medium text-sm transition-colors cursor-pointer" onclick="switchTab('enneagram')">에니어그램</button>
+                    <div class="flex border-b border-gray-200 mb-3 relative">
+                        <!-- type="button" 및 z-index 추가 -->
+                        <button type="button" id="tab-mbti" class="flex-1 py-2 text-sky-600 border-b-2 border-sky-600 font-medium text-sm transition-colors cursor-pointer relative z-10" onclick="switchTab('mbti')">MBTI</button>
+                        <button type="button" id="tab-enneagram" class="flex-1 py-2 text-gray-400 font-medium text-sm transition-colors cursor-pointer relative z-10" onclick="switchTab('enneagram')">에니어그램</button>
                     </div>
 
                     <!-- MBTI Select -->
@@ -174,7 +179,8 @@
             </section>
 
             <!-- 2. Loading Section -->
-            <section id="loading-section" class="loader-container">
+            <!-- [수정됨] hidden 클래스와 style="display: none"으로 확실히 숨김 -->
+            <section id="loading-section" class="loader-container hidden" style="display: none;">
                 <div class="plane-path">
                     <i class="fa-solid fa-plane plane"></i>
                 </div>
@@ -227,3 +233,9 @@
         </footer>
 
     </main>
+
+    <!-- [수정됨] JS 파일 연결 -->
+    <script src="main.js"></script>
+
+</body>
+</html>

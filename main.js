@@ -1,17 +1,11 @@
-// ---------------------------------------------------------
-// 1. Configuration & State
-// ---------------------------------------------------------
-let currentPersonalityType = 'mbti'; // 'mbti' or 'enneagram'
+// 1. 상태 변수
+let currentPersonalityType = 'mbti'; 
 
-// Initialize on load
-window.addEventListener('DOMContentLoaded', () => {
-    populateDurationOptions();
-});
+// 2. 함수 정의
 
-// ---------------------------------------------------------
-// 2. UI Logic (Tabs, Duration, etc.)
-// ---------------------------------------------------------
+// 탭 전환 함수
 function switchTab(type) {
+    console.log("Tab switching to:", type); 
     currentPersonalityType = type;
     const mbtiBtn = document.getElementById('tab-mbti');
     const enneagramBtn = document.getElementById('tab-enneagram');
@@ -19,16 +13,20 @@ function switchTab(type) {
     const enneagramSelect = document.getElementById('select-enneagram-container');
 
     if (type === 'mbti') {
+        // MBTI 활성화
         mbtiBtn.classList.add('text-sky-600', 'border-b-2', 'border-sky-600');
-        mbtiBtn.classList.remove('text-gray-400', 'border-b-0');
+        mbtiBtn.classList.remove('text-gray-400');
+        
         enneagramBtn.classList.remove('text-sky-600', 'border-b-2', 'border-sky-600');
         enneagramBtn.classList.add('text-gray-400');
         
         mbtiSelect.classList.remove('hidden');
         enneagramSelect.classList.add('hidden');
     } else {
+        // 에니어그램 활성화
         enneagramBtn.classList.add('text-sky-600', 'border-b-2', 'border-sky-600');
-        enneagramBtn.classList.remove('text-gray-400', 'border-b-0');
+        enneagramBtn.classList.remove('text-gray-400');
+        
         mbtiBtn.classList.remove('text-sky-600', 'border-b-2', 'border-sky-600');
         mbtiBtn.classList.add('text-gray-400');
 
@@ -37,59 +35,43 @@ function switchTab(type) {
     }
 }
 
+// 여행 기간 옵션 설정 (초기화 및 변경 시 호출)
 function populateDurationOptions() {
     const select = document.getElementById('duration');
     const travelType = document.querySelector('input[name="travelType"]:checked').value;
-    select.innerHTML = ''; // Clear existing
-
-    // Default start: Domestic can be 1 day, Overseas typically starts from 3 days
-    let startDay = 1;
-    if (travelType === 'overseas') startDay = 1; // Allow user flexibility, but logic suggests more
-
-    for (let i = startDay; i <= 14; i++) {
-        const option = document.createElement('option');
-        option.value = i;
-        if (i === 1) {
-            option.text = `1일 (당일치기)`;
-        } else {
-            option.text = `${i}일 (${i-1}박 ${i}일)`;
-        }
-        
-        // 해외여행 기본값은 3박 4일 정도로 설정해주면 센스 있음
-        if (travelType === 'overseas' && i === 4) {
-            option.selected = true;
-        }
-        // 국내여행 기본값은 1박 2일
-        if (travelType === 'domestic' && i === 2) {
-            option.selected = true;
-        }
-
-        select.appendChild(option);
+    
+    // 해외여행이면 기본 4일(3박 4일) 선택, 국내면 2일(1박 2일) 선택
+    if (travelType === 'overseas') {
+        select.value = "4";
+    } else {
+        select.value = "2";
     }
 }
 
+// 라디오 버튼 변경 시 호출
 function toggleDurationOptions() {
-    // Re-populate when travel type changes to set smart defaults
     populateDurationOptions();
 }
 
+// 앱 리셋 (중요: 로딩 화면 숨김 로직 강화)
 function resetApp() {
     document.getElementById('result-section').classList.add('hidden');
     document.getElementById('input-section').classList.remove('hidden');
     document.getElementById('input-section').classList.add('fade-in');
-    // Clear previous course
     document.getElementById('result-course-container').innerHTML = '';
+    
+    // [수정됨] 로딩 섹션 확실하게 숨기기
+    const loadingSection = document.getElementById('loading-section');
+    loadingSection.classList.add('hidden');
+    loadingSection.style.display = 'none';
 }
 
-// ---------------------------------------------------------
-// 3. Gemini API Logic
-// ---------------------------------------------------------
+// API 호출 함수
 async function getRecommendation() {
-    // 1. Collect Input Data
-    const travelType = document.querySelector('input[name="travelType"]:checked').value; // domestic or overseas
+    const travelType = document.querySelector('input[name="travelType"]:checked').value;
     const style = document.getElementById('travel-style').value;
     const budget = document.getElementById('budget').value;
-    const duration = document.getElementById('duration').value; // Number of days
+    const duration = document.getElementById('duration').value;
     
     let personality = "";
     if (currentPersonalityType === 'mbti') {
@@ -98,11 +80,12 @@ async function getRecommendation() {
         personality = "Enneagram Type: " + document.getElementById('enneagram-select').value;
     }
 
-    // 2. Show Loading UI
+    // [수정됨] 로딩 화면 표시 로직 강화
     document.getElementById('input-section').classList.add('hidden');
-    document.getElementById('loading-section').style.display = 'flex';
+    const loadingSection = document.getElementById('loading-section');
+    loadingSection.classList.remove('hidden'); // hidden 클래스 제거
+    loadingSection.style.display = 'flex';     // flex 레이아웃 적용
 
-    // 3. Construct Prompt
     let locationConstraint = "";
     if (travelType === 'domestic') {
         locationConstraint = "추천 범위: 반드시 '대한민국' 내의 도시나 지역이어야 함.";
@@ -140,8 +123,8 @@ async function getRecommendation() {
     `;
 
     try {
-        // 4. API Call
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+        // Cloudflare Functions (/recommend) 호출
+        const response = await fetch('/recommend', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -162,31 +145,27 @@ async function getRecommendation() {
         const aiText = data.candidates[0].content.parts[0].text;
         const result = JSON.parse(aiText);
 
-        // 5. Update UI with Result
         updateResultUI(result, travelType);
 
     } catch (error) {
         console.error(error);
-        alert("여행지 분석 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+        alert("여행지 분석 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.\n(개발자 모드: functions/recommend.js 가 배포되었는지 확인하세요)");
         resetApp();
     } finally {
-        // Hide Loading
-        document.getElementById('loading-section').style.display = 'none';
+        // [수정됨] 로딩 화면 숨기기 (hidden 클래스 다시 추가)
+        loadingSection.classList.add('hidden');
+        loadingSection.style.display = 'none';
     }
 }
 
-// ---------------------------------------------------------
-// 4. Dynamic Link Logic & Render
-// ---------------------------------------------------------
+// 결과 화면 업데이트
 function updateResultUI(data, travelType) {
-    // Text Updates
     document.getElementById('result-city').innerText = data.city_name_kr;
     document.getElementById('result-country').innerText = data.country;
     document.getElementById('result-reason').innerText = data.reason;
     
-    // Course Render (Systematic Display)
     const courseContainer = document.getElementById('result-course-container');
-    courseContainer.innerHTML = ''; // Clear old
+    courseContainer.innerHTML = ''; 
 
     if (data.itinerary && Array.isArray(data.itinerary)) {
         data.itinerary.forEach(dayPlan => {
@@ -202,33 +181,27 @@ function updateResultUI(data, travelType) {
             courseContainer.appendChild(item);
         });
     } else {
-        // Fallback if AI returns unstructured text
-         const item = document.createElement('div');
-         item.className = 'p-3 bg-gray-50 rounded text-sm';
-         item.innerText = "일정 정보를 불러오는데 실패했습니다.";
-         courseContainer.appendChild(item);
+            const item = document.createElement('div');
+            item.className = 'p-3 bg-gray-50 rounded text-sm';
+            item.innerText = "일정 정보를 불러오는데 실패했습니다.";
+            courseContainer.appendChild(item);
     }
 
-    // Button Logic
     const btn1 = document.getElementById('btn-link-1');
     const btn2 = document.getElementById('btn-link-2');
 
     if (travelType === 'overseas') {
-        // Case A: 해외 여행 (스카이스캐너 & 아고다)
         const destinationCode = data.iata_code || data.city_name_en; 
         const flightUrl = `https://www.skyscanner.co.kr/transport/flights/sel/${destinationCode}`;
         
         btn1.innerHTML = '<i class="fa-solid fa-plane-up mr-2"></i>최저가 항공권 확인';
         btn1.href = flightUrl;
 
-        // Agoda Link: 한글명(city_name_kr) 대신 영문명(city_name_en)을 사용하여 검색 정확도 향상
-        // 영문명이 아고다 데이터베이스와 매칭될 확률이 훨씬 높습니다.
         const hotelUrl = `https://www.agoda.com/ko-kr/search?text=${encodeURIComponent(data.city_name_en)}`;
         btn2.innerHTML = '<i class="fa-solid fa-hotel mr-2"></i>숙소 최저가 보기';
         btn2.href = hotelUrl;
 
     } else {
-        // Case B: 국내 여행 (네이버 & 쿠팡)
         const naverUrl = `https://search.naver.com/search.naver?query=${encodeURIComponent(data.city_name_kr + ' 여행')}`;
         btn1.innerHTML = '<i class="fa-solid fa-magnifying-glass mr-2"></i>여행 코스/맛집 검색';
         btn1.href = naverUrl;
@@ -238,6 +211,16 @@ function updateResultUI(data, travelType) {
         btn2.href = coupangUrl;
     }
 
-    // Show Result
     document.getElementById('result-section').classList.remove('hidden');
 }
+
+// 3. window 객체에 함수 할당 (모듈 환경 호환성 보장)
+window.switchTab = switchTab;
+window.toggleDurationOptions = toggleDurationOptions;
+window.getRecommendation = getRecommendation;
+window.resetApp = resetApp;
+
+// 초기화
+window.addEventListener('DOMContentLoaded', () => {
+    // 초기 로딩 시 국내여행(기본값)에 맞는 기간 설정
+});
