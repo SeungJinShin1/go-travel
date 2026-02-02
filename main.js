@@ -134,7 +134,7 @@ async function getRecommendation() {
             }
         };
 
-        const response = await fetch('/recommend', {
+        const response = await fetch('api/recommend', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(requestPayload) // 완성된 JSON 전송
