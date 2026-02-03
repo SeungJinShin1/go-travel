@@ -82,3 +82,12 @@ body {
     border-radius: 50%;
     border: 2px solid white;
 }
+
+/* [추가됨] 정보 섹션 스타일 (가독성 향상) */
+#info-section h3 {
+    color: #1e293b; /* slate-800 */
+    margin-bottom: 0.5rem;
+}
+#info-section p, #info-section li {
+    line-height: 1.6;
+}h2 { text-align: center; color: blue; }

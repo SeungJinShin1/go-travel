@@ -1,6 +1,25 @@
 // 1. 상태 변수
 let currentPersonalityType = 'mbti'; 
 
+// 앱 리셋 (중요: 로딩 화면 숨김 로직 강화)
+function resetApp() {
+    document.getElementById('result-section').classList.add('hidden');
+    document.getElementById('input-section').classList.remove('hidden');
+    document.getElementById('input-section').classList.add('fade-in');
+    document.getElementById('result-course-container').innerHTML = '';
+    
+    // [수정됨] 로딩 섹션 확실하게 숨기기
+    const loadingSection = document.getElementById('loading-section');
+    loadingSection.classList.add('hidden');
+    loadingSection.style.display = 'none';
+
+    // [추가됨] 리셋 시 설명 텍스트(정보 섹션) 다시 보이기
+    const infoSection = document.getElementById('info-section');
+    if (infoSection) {
+        infoSection.style.display = 'block';
+    }
+}
+
 // 2. 함수 정의
 
 // 탭 전환 함수
@@ -80,6 +99,13 @@ async function getRecommendation() {
     } else {
         personality = "Enneagram Type: " + document.getElementById('enneagram-select').value;
     }
+
+    // [추가됨] 로딩 시작 시 설명 텍스트(정보 섹션) 숨기기
+    // 결과 화면에 집중할 수 있도록 긴 글을 숨깁니다.
+    const infoSection = document.getElementById('info-section');
+    if (infoSection) {
+        infoSection.style.display = 'none';
+    }    
 
     // UI 상태 변경 (로딩 시작)
     document.getElementById('input-section').classList.add('hidden');
@@ -237,4 +263,4 @@ window.resetApp = resetApp;
 window.addEventListener('DOMContentLoaded', () => {
     // 초기 로딩 시 국내여행(기본값)에 맞는 기간 설정
     populateDurationOptions();
-});
+});console.log('Vercel deployment test');

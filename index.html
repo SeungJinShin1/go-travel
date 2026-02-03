@@ -1,253 +1,31 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MBTI,에니어그램 유형별 여행지 추천</title>
-
-    <!-- 구글, 네이버 서치 콘솔 소유권 확인 태그 -->
-    <meta name="google-site-verification" content="FERLpfGhLp1ZmWekwPrw8Cs0RtBI_zYvAP_ebRoEXD8" />
-    <meta name="naver-site-verification" content="4329d25cb8e1972d602ec3a84de6feca8a615d0a" />
-
-    <!-- 구글 애드센스 -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2560292529896467" crossorigin="anonymous"></script>
-     
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
-    
-    <!-- Font Awesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- Tailwind CSS (CDN) -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Tailwind Configuration -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        sky: {
-                            400: '#38bdf8',
-                            500: '#0ea5e9',
-                            600: '#0284c7',
-                        },
-                        travel: {
-                            bg: '#f0f9ff',
-                            card: '#ffffff',
-                            primary: '#3498db',
-                            secondary: '#2ecc71'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Noto Sans KR', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-
-    <!-- [수정됨] CSS 파일 연결 -->
-    <link rel="stylesheet" href="style.css">
-
+  <title>GoTravel</title>
+  <link href="httpshttps://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
-<body class="text-gray-800 font-sans min-h-screen flex flex-col items-center justify-center p-4">
+<body>
+  <header>
+    <h1>GoTravel</h1>
+    <p>Your ultimate travel companion</p>
+  </header>
 
-    <main class="w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden relative min-h-[600px] flex flex-col">
-        
-        <header class="bg-sky-500 p-6 text-white text-center flex-none">
-            <h1 class="text-2xl font-bold tracking-tight"><i class="fa-solid fa-plane-departure mr-2"></i>Go Travel</h1>
-            <p class="text-sky-100 text-sm mt-1">AI가 분석하는 나만의 여행지</p>
-        </header>
+  <main>
+    <section id="search-section">
+      <input type="text" id="destination-input" placeholder="Enter your destination">
+      <button id="search-button">Search</button>
+    </section>
 
-        <div class="p-6 pb-2 flex-grow">
+    <section id="results-section" style="display: none;"></section>
+    <section id="recommendations-section">
+      <h2>Recommended for you</h2>
+      <div id="recommendations-container"></div>
+    </section>
+  </main>
+  
+  <h2>Vercel Deployment Test</h2>
 
-            <!-- 1. Input Section -->
-            <section id="input-section" class="fade-in">
-                
-                <div class="mb-6">
-                    <label class="block text-gray-700 font-bold mb-2">어디로 떠날까요?</label>
-                    <div class="grid grid-cols-2 gap-3">
-                        <label class="cursor-pointer">
-                            <input type="radio" name="travelType" value="domestic" class="peer sr-only" checked onchange="toggleDurationOptions()">
-                            <div class="rounded-lg border-2 border-gray-200 p-3 text-center peer-checked:border-sky-500 peer-checked:bg-sky-50 peer-checked:text-sky-600 transition-all">
-                                <span class="block text-2xl mb-1">🇰🇷</span>
-                                <span class="font-medium">국내 여행</span>
-                            </div>
-                        </label>
-                        <label class="cursor-pointer">
-                            <input type="radio" name="travelType" value="overseas" class="peer sr-only" onchange="toggleDurationOptions()">
-                            <div class="rounded-lg border-2 border-gray-200 p-3 text-center peer-checked:border-sky-500 peer-checked:bg-sky-50 peer-checked:text-sky-600 transition-all">
-                                <span class="block text-2xl mb-1">✈️</span>
-                                <span class="font-medium">해외 여행</span>
-                            </div>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Personality Type (Tab) -->
-                <div class="mb-6">
-                    <label class="block text-gray-700 font-bold mb-2">나의 성격 유형은?</label>
-                    
-                    <!-- Tabs -->
-                    <div class="flex border-b border-gray-200 mb-3 relative">
-                        <!-- type="button" 및 z-index 추가 -->
-                        <button type="button" id="tab-mbti" class="flex-1 py-2 text-sky-600 border-b-2 border-sky-600 font-medium text-sm transition-colors cursor-pointer relative z-10" onclick="switchTab('mbti')">MBTI</button>
-                        <button type="button" id="tab-enneagram" class="flex-1 py-2 text-gray-400 font-medium text-sm transition-colors cursor-pointer relative z-10" onclick="switchTab('enneagram')">에니어그램</button>
-                    </div>
-
-                    <!-- MBTI Select -->
-                    <div id="select-mbti-container">
-                        <select id="mbti-select" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 bg-white appearance-none">
-                            <option value="ISTJ">ISTJ (현실주의자)</option>
-                            <option value="ISFJ">ISFJ (수호자)</option>
-                            <option value="INFJ">INFJ (옹호자)</option>
-                            <option value="INTJ">INTJ (전략가)</option>
-                            <option value="ISTP">ISTP (장인)</option>
-                            <option value="ISFP">ISFP (모험가)</option>
-                            <option value="INFP">INFP (중재자)</option>
-                            <option value="INTP">INTP (논리술사)</option>
-                            <option value="ESTP">ESTP (사업가)</option>
-                            <option value="ESFP">ESFP (연예인)</option>
-                            <option value="ENFP">ENFP (활동가)</option>
-                            <option value="ENTP">ENTP (변론가)</option>
-                            <option value="ESTJ">ESTJ (경영자)</option>
-                            <option value="ESFJ">ESFJ (집정관)</option>
-                            <option value="ENFJ">ENFJ (선도자)</option>
-                            <option value="ENTJ">ENTJ (통솔자)</option>
-                        </select>
-                    </div>
-
-                    <!-- Enneagram Select (Hidden by default) -->
-                    <div id="select-enneagram-container" class="hidden">
-                        <select id="enneagram-select" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 bg-white appearance-none">
-                            <option value="1">1유형 (개혁가)</option>
-                            <option value="2">2유형 (조력가)</option>
-                            <option value="3">3유형 (성취가)</option>
-                            <option value="4">4유형 (예술가)</option>
-                            <option value="5">5유형 (사색가)</option>
-                            <option value="6">6유형 (충실가)</option>
-                            <option value="7">7유형 (낙천가)</option>
-                            <option value="8">8유형 (도전가)</option>
-                            <option value="9">9유형 (평화가)</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Duration -->
-                <div class="mb-6">
-                    <label class="block text-gray-700 font-bold mb-2">여행 기간</label>
-                    <select id="duration" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 bg-white text-sm appearance-none">
-                        <option value="1">1일 (당일치기)</option>
-                        <option value="2" selected>2일 (1박 2일)</option>
-                        <option value="3">3일 (2박 3일)</option>
-                        <option value="4">4일 (3박 4일)</option>
-                        <option value="5">5일 (4박 5일)</option>
-                        <option value="6">6일 (5박 6일)</option>
-                        <option value="7">7일 (6박 7일)</option>
-                        <option value="8">8일 (7박 8일)</option>
-                        <option value="9">9일 (8박 9일)</option>
-                        <option value="10">10일 (9박 10일)</option>
-                        <option value="11">11일 (10박 11일)</option>
-                        <option value="12">12일 (11박 12일)</option>
-                        <option value="13">13일 (12박 13일)</option>
-                        <option value="14">14일 (13박 14일)</option>
-                    </select>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3 mb-8">
-                    <div>
-                        <label class="block text-gray-700 font-bold mb-2 text-sm">여행 스타일</label>
-                        <select id="travel-style" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 bg-white text-sm">
-                            <option value="healing">🍃 힐링/휴양</option>
-                            <option value="activity">🏄 액티비티/관광</option>
-                            <option value="food">🍜 먹방/식도락</option>
-                            <option value="city">🛍️ 쇼핑/도시</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 font-bold mb-2 text-sm">예산</label>
-                        <select id="budget" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 bg-white text-sm">
-                            <option value="budget">💸 가성비</option>
-                            <option value="moderate">⚖️ 적당히</option>
-                            <option value="luxury">💎 럭셔리</option>
-                        </select>
-                    </div>
-                </div>
-
-                <button onclick="getRecommendation()" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold py-4 rounded-xl shadow-lg transition-all transform hover:scale-[1.02] active:scale-95">
-                    AI 여행지 추천받기
-                </button>
-            </section>
-
-            <!-- 2. Loading Section -->
-            <!-- [수정됨] hidden 클래스와 style="display: none"으로 확실히 숨김 -->
-            <section id="loading-section" class="loader-container hidden" style="display: none;">
-                <div class="plane-path">
-                    <i class="fa-solid fa-plane plane"></i>
-                </div>
-                <h3 class="text-lg font-bold text-gray-700">AI가 여행지를 분석 중입니다...</h3>
-                <p class="text-sm text-gray-500 mt-2">당신의 성향에 딱 맞는 곳을 찾고 있어요!</p>
-            </section>
-
-            <!-- 3. Result Section -->
-            <section id="result-section" class="hidden fade-in">
-                <div class="text-center mb-6">
-                    <span class="inline-block px-3 py-1 bg-sky-100 text-sky-600 rounded-full text-xs font-bold mb-2 tracking-wide">RECOMMENDATION</span>
-                    <h2 class="text-3xl font-bold text-gray-800" id="result-city">City Name</h2>
-                    <p class="text-gray-500 text-sm" id="result-country">Country</p>
-                </div>
-
-                <div class="bg-gray-50 p-5 rounded-xl border border-gray-100 mb-6">
-                    <h4 class="font-bold text-gray-700 mb-2 flex items-center"><i class="fa-solid fa-quote-left text-sky-500 mr-2"></i>추천 이유</h4>
-                    <p id="result-reason" class="text-gray-600 text-sm leading-relaxed">
-                        이곳은 당신의 성향과 완벽하게 일치합니다.
-                    </p>
-                </div>
-
-                <div class="mb-6">
-                    <h4 class="font-bold text-gray-700 mb-4 flex items-center"><i class="fa-solid fa-map-location-dot text-sky-500 mr-2"></i>여행 코스 추천</h4>
-                    <div id="result-course-container" class="pl-2">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 gap-3">
-                    <a id="btn-link-1" href="#" target="_blank" class="flex items-center justify-center w-full bg-sky-500 text-white font-bold py-3.5 rounded-xl shadow hover:bg-sky-600 transition-colors">
-                    </a>
-                    <a id="btn-link-2" href="#" target="_blank" class="flex items-center justify-center w-full bg-white text-sky-600 border-2 border-sky-100 font-bold py-3.5 rounded-xl hover:bg-sky-50 transition-colors">
-                    </a>
-                </div>
-
-                <button onclick="resetApp()" class="w-full mt-4 bg-gray-100 text-gray-600 font-bold py-3.5 rounded-xl hover:bg-gray-200 transition-colors flex items-center justify-center">
-                    <i class="fa-solid fa-rotate-right mr-2"></i>다시 하기
-                </button>
-            </section>
-        </div>
-
-        <iframe src="https://coupa.ng/clupDv" width="100%" height="75" frameborder="0" scrolling="no" referrerpolicy="unsafe-url" browsingtopics></iframe>
-
-        <footer>
-                        
-            <div style="text-align: center; padding: 20px; font-size: 0.9em; color: #666;">
-                <p>go-travel © 2026. Powered by Google Gemini.</p>
-                
-                <p style="margin: 15px 0;">
-                    이 포스팅은 쿠팡 파트너스 활동의 일환으로,<br>
-                    이에 따른 일정액의 수수료를 제공받습니다.
-                </p>
-                
-                <p>
-                    <a href="#">이용약관</a> | <a href="#">개인정보처리방침</a>
-                </p>
-            </div>
-        </footer>
-
-    </main>
-
-    <!-- [수정됨] JS 파일 연결 -->
-    <script src="main.js"></script>
-
+  <script src="main.js"></script>
 </body>
 </html>
