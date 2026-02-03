@@ -1,25 +1,6 @@
 // 1. 상태 변수
 let currentPersonalityType = 'mbti'; 
 
-// 앱 리셋 (중요: 로딩 화면 숨김 로직 강화)
-function resetApp() {
-    document.getElementById('result-section').classList.add('hidden');
-    document.getElementById('input-section').classList.remove('hidden');
-    document.getElementById('input-section').classList.add('fade-in');
-    document.getElementById('result-course-container').innerHTML = '';
-    
-    // [수정됨] 로딩 섹션 확실하게 숨기기
-    const loadingSection = document.getElementById('loading-section');
-    loadingSection.classList.add('hidden');
-    loadingSection.style.display = 'none';
-
-    // [추가됨] 리셋 시 설명 텍스트(정보 섹션) 다시 보이기
-    const infoSection = document.getElementById('info-section');
-    if (infoSection) {
-        infoSection.style.display = 'block';
-    }
-}
-
 // 2. 함수 정의
 
 // 탭 전환 함수
@@ -54,12 +35,11 @@ function switchTab(type) {
     }
 }
 
-// 여행 기간 옵션 설정 (초기화 및 변경 시 호출)
+// 여행 기간 옵션 설정
 function populateDurationOptions() {
     const select = document.getElementById('duration');
     const travelType = document.querySelector('input[name="travelType"]:checked').value;
     
-    // 해외여행이면 기본 4일(3박 4일) 선택, 국내면 2일(1박 2일) 선택
     if (travelType === 'overseas') {
         select.value = "4";
     } else {
@@ -79,10 +59,17 @@ function resetApp() {
     document.getElementById('input-section').classList.add('fade-in');
     document.getElementById('result-course-container').innerHTML = '';
     
-    // [수정됨] 로딩 섹션 확실하게 숨기기
+    // 로딩 섹션 숨기기
     const loadingSection = document.getElementById('loading-section');
     loadingSection.classList.add('hidden');
     loadingSection.style.display = 'none';
+
+    // [중요] 리셋 시 설명 텍스트(정보 섹션) 다시 보이기
+    // 이 부분이 추가된 로직입니다. (다시 하기 누르면 설명글 복구)
+    const infoSection = document.getElementById('info-section');
+    if (infoSection) {
+        infoSection.style.display = 'block';
+    }
 }
 
 // API 호출 함수
@@ -92,7 +79,6 @@ async function getRecommendation() {
     const budget = document.getElementById('budget').value;
     const duration = document.getElementById('duration').value;
     
-    // 성격 유형 로직
     let personality = "";
     if (currentPersonalityType === 'mbti') {
         personality = "MBTI: " + document.getElementById('mbti-select').value;
@@ -100,14 +86,14 @@ async function getRecommendation() {
         personality = "Enneagram Type: " + document.getElementById('enneagram-select').value;
     }
 
-    // [추가됨] 로딩 시작 시 설명 텍스트(정보 섹션) 숨기기
-    // 결과 화면에 집중할 수 있도록 긴 글을 숨깁니다.
+    // [중요] 로딩 시작 시 설명 텍스트(정보 섹션) 숨기기
+    // 결과 화면에 집중할 수 있도록 긴 글을 숨기는 로직입니다.
     const infoSection = document.getElementById('info-section');
     if (infoSection) {
         infoSection.style.display = 'none';
-    }    
+    }
 
-    // UI 상태 변경 (로딩 시작)
+    // 로딩 화면 표시
     document.getElementById('input-section').classList.add('hidden');
     const loadingSection = document.getElementById('loading-section');
     loadingSection.classList.remove('hidden'); 
@@ -132,64 +118,56 @@ async function getRecommendation() {
         ${locationConstraint}
         
         위 정보를 바탕으로 최적의 여행지 1곳을 추천해주세요.
-        반드시 아래 JSON 형식으로만 응답하세요. (마크다운 없이 JSON만 출력)
+        반드시 아래 JSON 형식으로만 응답하세요. (마크다운이나 설명 없이 JSON만 출력)
         
         {
             "city_name_kr": "도시 한글명",
-            "city_name_en": "도시 영문명",
-            "iata_code": "공항 IATA 코드 3자리 (없으면 null)",
+            "city_name_en": "도시 영문명 (해외면 영어, 국내면 로마자 표기)",
+            "iata_code": "해당 도시의 공항 IATA 코드 3자리 (예: 다낭이면 DAD, 국내 여행이면 빈 문자열)",
             "country": "국가명",
-            "reason": "추천 이유 (3문장 이내)",
+            "reason": "추천 이유 (3문장 이내, 감성적인 톤)",
             "itinerary": [
-                { "day": 1, "schedule": "일정 내용" },
-                { "day": 2, "schedule": "일정 내용" }
+                { "day": 1, "schedule": "1일차 상세 일정 및 활동" },
+                { "day": 2, "schedule": "2일차 상세 일정 및 활동" }
+                ... (여행 기간 ${duration}일에 맞춰 생성)
             ],
-            "keyword": "검색 키워드"
+            "keyword": "검색용 키워드 (예: 다낭 여행)"
         }
     `;
 
     try {
-        // 백엔드에 보낼 때 "완성된 Gemini 포맷"으로 보내기
-        // recommend.js가 그대로 토스만 할 수 있도록 여기서 다 조립
-        const requestPayload = {
-            contents: [{
-                parts: [{ text: promptText }]
-            }],
-            generationConfig: {
-                responseMimeType: "application/json"
-            }
-        };
-
-        const response = await fetch('api/recommend', {
+        // Vercel API 경로 (/api/recommend) 호출
+        const response = await fetch('/api/recommend', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(requestPayload) // 완성된 JSON 전송
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                contents: [{
+                    parts: [{ text: promptText }]
+                }],
+                generationConfig: {
+                    responseMimeType: "application/json"
+                }
+            })
         });
 
-        if (!response.ok) {
-            // 에러 메시지를 서버에서 주는 대로 정확히 표시
-            const errorData = await response.json().catch(() => ({}));
-            
-            if (response.status === 404) {
-                 throw new Error("서버 함수(/recommend)를 찾을 수 없습니다.\n1. 배포가 완료될 때까지 1~2분 기다려주세요.\n2. localhost가 아닌 'pages.dev' 주소인지 확인하세요.");
-            }
-            
-            throw new Error(errorData.details || errorData.error || `서버 오류 (${response.status})`);
-        }
+        if (!response.ok) throw new Error(`API 호출 실패: ${response.status}`);
 
         const data = await response.json();
-        const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text;
         
-        if (!aiText) throw new Error('AI 응답이 비어있습니다.');
+        if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
+            throw new Error("AI 응답 형식이 올바르지 않습니다.");
+        }
 
-        const cleanJson = aiText.replace(/```json/g, '').replace(/```/g, '').trim();
-        const result = JSON.parse(cleanJson);
+        const aiText = data.candidates[0].content.parts[0].text;
+        const result = JSON.parse(aiText);
 
         updateResultUI(result, travelType);
 
     } catch (error) {
-        console.error("Error Detail:", error);
-        alert(`오류 발생: ${error.message}`);
+        console.error(error);
+        alert(`여행지 분석 중 오류가 발생했습니다.\n${error.message}\n(Vercel 환경변수 설정 및 api 폴더 위치를 확인하세요)`);
         resetApp();
     } finally {
         loadingSection.classList.add('hidden');
@@ -245,6 +223,7 @@ function updateResultUI(data, travelType) {
         btn1.innerHTML = '<i class="fa-solid fa-magnifying-glass mr-2"></i>여행 코스/맛집 검색';
         btn1.href = naverUrl;
 
+        // [기존 요청 반영] 국내 숙소도 아고다 연결
         const hotelUrl = `https://www.agoda.com/ko-kr/search?text=${encodeURIComponent(data.city_name_kr)}`;
         btn2.innerHTML = '<i class="fa-solid fa-hotel mr-2"></i>숙소 최저가 보기';
         btn2.href = hotelUrl;
@@ -253,14 +232,13 @@ function updateResultUI(data, travelType) {
     document.getElementById('result-section').classList.remove('hidden');
 }
 
-// 3. window 객체에 함수 할당 (모듈 환경 호환성 보장)
+// 3. window 객체에 함수 할당
 window.switchTab = switchTab;
 window.toggleDurationOptions = toggleDurationOptions;
 window.getRecommendation = getRecommendation;
 window.resetApp = resetApp;
 
-// 초기화
 window.addEventListener('DOMContentLoaded', () => {
-    // 초기 로딩 시 국내여행(기본값)에 맞는 기간 설정
+    // 초기화 로직
     populateDurationOptions();
-});console.log('Vercel deployment test');
+});
