@@ -241,32 +241,32 @@
                     </a>
                 </div>
 
-                <button onclick="resetApp()" class="w-full mt-4 text-gray-400 text-sm underline hover:text-gray-600">
-                    다시 하기
+                <button onclick="resetApp()" class="w-full mt-6 bg-white border border-gray-200 text-gray-500 font-medium py-3 rounded-xl hover:bg-gray-50 transition-colors text-sm shadow-sm flex items-center justify-center">
+                    <i class="fa-solid fa-rotate-right mr-2"></i> 다시 하기
                 </button>
             </section>
         </div>
 
-        <footer class="p-6 pt-0 flex-none">
-        <!-- [수정] 애드센스 광고 영역: 콘텐츠 중간에 자연스럽게 배치 -->
-        <div class="mt-8 mb-4 adsense-container rounded-lg border border-gray-200 bg-white">
-            <div class="text-xs text-gray-400 p-4 text-center">
-                <!-- 여기에 구글 애드센스 '디스플레이 광고' 코드를 붙여넣으세요 -->
-                (구글 애드센스 광고 영역)
-            </div>
-        </div>
+        <footer class="p-6 pt-0 flex-none text-center">
             
-            <p class="font-bold text-gray-500 mb-2">MBTI-Travel</p>
-            <p class="mb-4">MBTI-Travel © 2026. Powered by Google Gemini.</p>
-
-            <div class="flex justify-center space-x-4 border-t border-gray-200 pt-4 w-3/4 mx-auto">
-                <a href="#" class="hover:text-gray-600">서비스 이용약관</a>
-                <span class="text-gray-300">|</span>
-                <a href="#" class="hover:text-gray-600 font-bold">개인정보처리방침</a>
-                <span class="text-gray-300">|</span>
-                <a href="#" class="hover:text-gray-600">문의하기</a>
+            <!-- 애드센스 광고 영역 -->
+            <div class="mt-4 mb-6 adsense-container rounded-lg border border-gray-200 bg-white overflow-hidden">
+                <div class="text-xs text-gray-400 p-4 text-center min-h-[100px] flex items-center justify-center">
+                    <!-- 실제 배포 시 여기에 애드센스 코드를 넣으세요 -->
+                    (구글 애드센스 광고 영역)
+                </div>
             </div>
+            
+            <p class="text-xs font-bold text-gray-400 mb-1">MBTI-Travel</p>
+            <p class="text-[10px] text-gray-400 mb-4">© 2026 MBTI-Travel. Powered by Google Gemini.</p>
 
+            <div class="flex justify-center items-center space-x-3 border-t border-gray-200 pt-4 w-4/5 mx-auto text-[10px] text-gray-400">
+                <a href="#" class="hover:text-gray-600 transition-colors">서비스 이용약관</a>
+                <span class="text-gray-300">|</span>
+                <a href="#" class="hover:text-gray-600 transition-colors font-medium">개인정보처리방침</a>
+                <span class="text-gray-300">|</span>
+                <a href="#" class="hover:text-gray-600 transition-colors">문의하기</a>
+            </div>
         </footer>
 
     </main>
