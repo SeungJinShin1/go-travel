@@ -165,42 +165,106 @@
                     AI 여행지 추천받기
                 </button>
 
-                <!-- [애드센스 승인을 위한 텍스트 콘텐츠 추가됨] -->
-                <!-- 이 부분은 평소에 보이다가, 추천 결과가 나오면 main.js가 숨깁니다. -->
-                <article id="info-section" class="mt-10 pt-8 border-t border-gray-100 text-gray-600 space-y-6">
-                    <div>
-                        <h3 class="text-lg font-bold text-gray-800 mb-2">Go Travel 서비스 소개</h3>
-                        <p class="text-sm leading-relaxed text-justify">
-                            <strong>Go Travel</strong>은 최신 AI 기술을 활용하여 개인의 성격 유형(MBTI, 에니어그램)과 선호하는 여행 스타일을 분석해 최적의 여행지를 추천해주는 지능형 서비스입니다. 
-                            단순한 인기 여행지가 아닌, 당신의 내면이 진정으로 원하는 힐링 포인트와 활동을 찾아드립니다.
+                <!-- [애드센스 승인을 위한 텍스트 콘텐츠 추가] -->
+                <article id="info-section" class="mt-12 pt-10 border-t border-gray-100 text-gray-600 space-y-10">
+                    
+                    <!-- 1. 서비스 상세 소개 -->
+                    <section>
+                        <h3 class="text-xl font-bold text-gray-800 mb-3 border-b-2 border-sky-100 pb-2 inline-block">Go Travel: AI가 제안하는 여행의 기준</h3>
+                        <p class="text-sm leading-relaxed text-justify mb-3">
+                            <strong>Go Travel</strong>은 구글의 최신 제미나이(Gemini) AI 기술을 활용하여, 단순한 인기 여행지가 아닌 <strong>개인의 심리적 성향(MBTI, 에니어그램)</strong>과 <strong>현재의 여행 니즈</strong>를 정밀하게 분석해 최적의 여행지를 추천해주는 차세대 여행 큐레이션 서비스입니다.
                         </p>
-                    </div>
+                        <p class="text-sm leading-relaxed text-justify">
+                            누구에게나 똑같은 맛집과 관광지를 추천하는 기존 방식에서 벗어나, 당신의 내면이 진정으로 원하는 힐링 포인트, 활동 수준, 예산 범위까지 고려한 <strong>초개인화된 여행 코스</strong>를 단 몇 초 만에 무료로 받아보세요.
+                        </p>
+                    </section>
 
-                    <div>
-                        <h3 class="text-lg font-bold text-gray-800 mb-2">성격 유형별 여행 스타일</h3>
-                        <ul class="text-sm space-y-2 list-disc pl-4 text-justify">
-                            <li><strong>분석가형 (INTJ, INTP 등):</strong> 논리적이고 계획적인 여행을 선호합니다. 역사적 유적지나 지적 호기심을 채울 수 있는 박물관 투어가 적합합니다.</li>
-                            <li><strong>외교관형 (INFJ, ENFP 등):</strong> 의미 있는 경험과 감성적인 연결을 중시합니다. 로컬 문화를 깊이 체험하거나 자연 속에서의 명상을 추천합니다.</li>
-                            <li><strong>관리자형 (ISTJ, ESTJ 등):</strong> 체계적이고 확실한 일정을 좋아합니다. 검증된 맛집과 편안한 숙소가 보장된 휴양지가 좋습니다.</li>
-                            <li><strong>탐험가형 (ISTP, ESFP 등):</strong> 즉흥적이고 액티비티한 경험을 즐깁니다. 서핑, 트레킹 등 오감을 자극하는 활동적인 여행이 제격입니다.</li>
+                    <!-- 2. 이용 방법 가이드 -->
+                    <section>
+                        <h3 class="text-lg font-bold text-gray-800 mb-3">🚀 100% 활용하는 방법</h3>
+                        <ul class="text-sm space-y-3">
+                            <li class="flex items-start">
+                                <span class="flex-shrink-0 w-6 h-6 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center text-xs font-bold mr-3 mt-0.5">1</span>
+                                <span><strong>여행지 범위 선택:</strong> 국내 힐링 여행인지, 새로운 영감을 위한 해외 여행인지 선택하세요.</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="flex-shrink-0 w-6 h-6 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center text-xs font-bold mr-3 mt-0.5">2</span>
+                                <span><strong>성격 유형 입력:</strong> 평소 자신의 MBTI나 에니어그램 유형을 선택합니다. AI가 성향에 맞는 여행 템포를 조절합니다.</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="flex-shrink-0 w-6 h-6 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center text-xs font-bold mr-3 mt-0.5">3</span>
+                                <span><strong>세부 옵션 설정:</strong> 여행 기간, 선호하는 활동(휴양/관광/미식/쇼핑), 예산을 설정하면 더욱 정교한 결과가 나옵니다.</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="flex-shrink-0 w-6 h-6 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center text-xs font-bold mr-3 mt-0.5">4</span>
+                                <span><strong>원클릭 예약:</strong> 추천받은 여행지의 최저가 항공권과 숙소 정보를 즉시 확인하고 예약할 수 있습니다.</span>
+                            </li>
                         </ul>
-                    </div>
+                    </section>
 
-                    <div>
-                        <h3 class="text-lg font-bold text-gray-800 mb-2">자주 묻는 질문 (FAQ)</h3>
-                        <div class="space-y-3">
-                            <div class="bg-gray-50 p-3 rounded-lg">
-                                <p class="text-xs font-bold text-sky-600 mb-1">Q. 추천 결과는 얼마나 정확한가요?</p>
-                                <p class="text-xs">A. 구글의 최신 제미나이(Gemini) AI 모델을 사용하여 전 세계 여행 데이터와 성격 심리학을 결합해 분석하므로 높은 만족도를 제공합니다.</p>
+                    <!-- 3. 성격 유형별 여행 가이드 (상세) -->
+                    <section>
+                        <h3 class="text-lg font-bold text-gray-800 mb-4">🧠 성격 유형별 추천 여행 스타일</h3>
+                        
+                        <div class="space-y-5">
+                            <div class="bg-gray-50 p-4 rounded-xl">
+                                <h4 class="font-bold text-sky-700 mb-1 text-sm">🧬 분석가형 (INTJ, INTP, ENTJ, ENTP)</h4>
+                                <p class="text-xs leading-relaxed">
+                                    지적 호기심이 강한 분석가형에게는 <strong>역사적 깊이가 있는 도시</strong>나 <strong>과학/예술 박물관 투어</strong>를 추천합니다. 
+                                    단순한 휴양보다는 새로운 지식을 습득하고 논리적으로 탐구할 수 있는 유럽의 고성 투어나 실리콘밸리 탐방 등이 높은 만족도를 줍니다.
+                                </p>
                             </div>
-                            <div class="bg-gray-50 p-3 rounded-lg">
-                                <p class="text-xs font-bold text-sky-600 mb-1">Q. 비용은 무료인가요?</p>
-                                <p class="text-xs">A. 네, Go Travel의 모든 여행지 추천 및 일정 생성 기능은 100% 무료로 제공됩니다.</p>
+
+                            <div class="bg-gray-50 p-4 rounded-xl">
+                                <h4 class="font-bold text-green-700 mb-1 text-sm">🌿 외교관형 (INFJ, INFP, ENFJ, ENFP)</h4>
+                                <p class="text-xs leading-relaxed">
+                                    의미와 연결을 중시하는 외교관형은 <strong>현지인과의 교류</strong>가 가능한 소도시 여행이나, 자연 속에서 내면을 들여다볼 수 있는 <strong>템플스테이, 요가 리트릿</strong>이 적합합니다. 
+                                    유명 관광지보다는 골목길 투어나 로컬 시장 방문에서 큰 행복을 느낍니다.
+                                </p>
+                            </div>
+
+                            <div class="bg-gray-50 p-4 rounded-xl">
+                                <h4 class="font-bold text-blue-700 mb-1 text-sm">🛡️ 관리자형 (ISTJ, ISFJ, ESTJ, ESFJ)</h4>
+                                <p class="text-xs leading-relaxed">
+                                    계획적이고 질서를 선호하는 관리자형에게는 <strong>인프라가 잘 갖춰진 선진국 도시</strong>나 <strong>검증된 5성급 리조트</strong>를 추천합니다. 
+                                    변수가 많은 오지 여행보다는 교통과 치안이 확실하고, 미리 계획한 일정대로 움직일 수 있는 싱가포르, 일본, 괌 등이 최고의 여행지입니다.
+                                </p>
+                            </div>
+
+                            <div class="bg-gray-50 p-4 rounded-xl">
+                                <h4 class="font-bold text-orange-700 mb-1 text-sm">🎨 탐험가형 (ISTP, ISFP, ESTP, ESFP)</h4>
+                                <p class="text-xs leading-relaxed">
+                                    자유로운 영혼의 탐험가형은 오감을 자극하는 <strong>액티비티 여행</strong>이 제격입니다. 
+                                    스카이다이빙, 서핑, 스쿠버다이빙 등 몸을 움직이는 활동이나, 즉흥적으로 떠날 수 있는 동남아 야시장 투어, 캠핑카 여행을 강력 추천합니다.
+                                </p>
                             </div>
                         </div>
-                    </div>
+                    </section>
+
+                    <!-- 4. 자주 묻는 질문 (확장됨) -->
+                    <section>
+                        <h3 class="text-lg font-bold text-gray-800 mb-3">❓ 자주 묻는 질문 (FAQ)</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <p class="text-xs font-bold text-gray-700 mb-1">Q. 추천 결과는 얼마나 정확한가요?</p>
+                                <p class="text-xs text-gray-500">A. 구글의 방대한 여행 데이터베이스와 최신 LLM 기술을 결합하여, 사용자가 입력한 4가지 변수(유형, 성격, 스타일, 예산)를 종합적으로 분석하므로 매우 높은 정확도를 자랑합니다.</p>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-gray-700 mb-1">Q. 정말 무료인가요?</p>
+                                <p class="text-xs text-gray-500">A. 네, Go Travel의 모든 AI 분석 및 일정 생성 기능은 평생 무료로 제공됩니다. 별도의 회원가입 없이 바로 이용 가능합니다.</p>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-gray-700 mb-1">Q. 해외 여행 시 항공권 예약도 되나요?</p>
+                                <p class="text-xs text-gray-500">A. 추천 결과 페이지에서 '최저가 항공권 확인' 버튼을 누르면, 해당 도시로 가는 스카이스캐너 검색 결과로 즉시 연결되어 편리하게 예약할 수 있습니다.</p>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-gray-700 mb-1">Q. 모바일에서도 잘 보이나요?</p>
+                                <p class="text-xs text-gray-500">A. Go Travel은 모바일 퍼스트(Mobile-First) 디자인으로 제작되어 스마트폰, 태블릿, PC 등 모든 기기에서 최적화된 화면을 제공합니다.</p>
+                            </div>
+                        </div>
+                    </section>
+
                 </article>
-                <!-- [콘텐츠 끝] -->
 
             </section>
 
